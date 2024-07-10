@@ -289,6 +289,14 @@ void LimbManager::update()
     // skipped for EmptyContact and requireTouchDownPoseUpdate_ is retained. The current implementation works well for
     // contact transitions where the hand grasps the environment (i.e., EmptyContact -> GraspContact), but it does not
     // work well to perform other contact transitions in the future (e.g., SurfaceContact -> GraspContact).
+    if(auto surfaceContact = std::dynamic_pointer_cast<ForceColl::SurfaceContact>(currentContactCommand_->constraint))
+    {
+      mc_rtc::log::info("[LimbManager({})] Update local vertices of contact constraint.", std::to_string(limb_));
+      std::vector<Eigen::Vector3d> localVertices;
+      // \todo Set localVertices here.
+      // The number of elements in localVertices must be the same as before the update.
+      surfaceContact->updateLocalVertices(localVertices);
+    }
     currentContactCommand_->constraint->updateGlobalVertices(targetPose_);
     requireTouchDownPoseUpdate_ = false;
   }
