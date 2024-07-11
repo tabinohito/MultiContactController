@@ -101,20 +101,6 @@ void LimbManager::reset(const mc_rtc::Configuration & _constraintConfig)
         std::make_shared<ContactCommand>(ctl().t(), ContactConstraint::makeSharedFromConfig(constraintConfig));
   }
   contactCommandList_.emplace(ctl().t(), currentContactCommand_);
-
-  for(const auto & foot : feet)
-  {
-    sensor_max_contact_position_[foot].setZero();
-    sensor_min_contact_position_[foot].setZero();
-    sensor_touchDown_[foot] = false;
-
-    default_max_contact_position_[foot].x() = 0;
-    default_max_contact_position_[foot].y() = 0;
-    default_max_contact_position_[foot].z() = 0;
-    default_min_contact_position_[foot].x() = 0;
-    default_min_contact_position_[foot].y() = 0;
-    default_min_contact_position_[foot].z() = 0;
-  }
 }
 
 void LimbManager::update()
@@ -188,8 +174,8 @@ void LimbManager::update()
             // }
             if(config_.enableSensorBasedContactArea && ((limb_.name == "RightFoot") || (limb_.name == "LeftFoot")))
             {
-              auto min_contact = getSensorMinContactPosition();
-              auto max_contact = getSensorMaxContactPosition();
+              auto min_contact = ctl().limbManagerSet_->getSensorMinContactPosition();
+              auto max_contact = ctl().limbManagerSet_->getSensorMaxContactPosition();
               localVertices = {
                   min_contact[limb_.name], max_contact[limb_.name],
                   Eigen::Vector3d(min_contact[limb_.name](0), max_contact[limb_.name](1), min_contact[limb_.name](2)),
@@ -464,24 +450,6 @@ void LimbManager::addToLogger(mc_rtc::Logger & logger)
   MC_RTC_LOG_HELPER(name + "_phase", phase_);
   MC_RTC_LOG_HELPER(name + "_impGainType", impGainType_);
   logger.addLogEntry(name + "_contactWeight", this, [this]() { return getContactWeight(ctl().t()); });
-
-  for(const auto & foot : feet)
-  {
-    logger.addLogEntry(config_.name + "_sensor_contactMaxDist_" + foot, this,
-                       [this, foot]() -> const Eigen::Vector3d { return sensor_max_contact_position_.at(foot); });
-
-    logger.addLogEntry(config_.name + "_sensor_contactMinDist_" + foot, this,
-                       [this, foot]() -> const Eigen::Vector3d { return sensor_min_contact_position_.at(foot); });
-
-    logger.addLogEntry(config_.name + "_sensor_touchDown_" + foot, this,
-                       [this, foot]() -> bool { return sensor_touchDown_.at(foot); });
-
-    logger.addLogEntry(config_.name + "_sensor_defauldContactMaxDist_" + foot, this,
-                       [this, foot]() -> const Eigen::Vector3d { return default_max_contact_position_.at(foot); });
-
-    logger.addLogEntry(config_.name + "_sensor_defauldContactMinDist_" + foot, this,
-                       [this, foot]() -> const Eigen::Vector3d { return default_min_contact_position_.at(foot); });
-  }
 
   constexpr bool enableDebugLog = false;
   if(enableDebugLog)

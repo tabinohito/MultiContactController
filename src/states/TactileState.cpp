@@ -1,6 +1,7 @@
 #include <mc_rtc/gui/Button.h>
 #include <mc_rtc/ros.h>
-
+#include <MultiContactController/LimbManager.h>
+#include <MultiContactController/MultiContactController.h>
 #include <MultiContactController/states/TactileState.h>
 
 using namespace MCC;
@@ -59,10 +60,10 @@ bool TactileState::run(mc_control::fsm::Controller &)
   // Call ROS callback
   callbackQueue_.callAvailable(ros::WallDuration());
 
-  // ctl().footManager_->setSensordContactArea(contactArea_);
-  // ctl().footManager_->setSensorMinContactPosition(min_pose_);
-  // ctl().footManager_->setSensorMaxContactPosition(max_pose_);
-  // ctl().footManager_->setSensorTouchDown(touchDown_);
+  ctl().limbManagerSet_->setSensordContactArea(contactArea_);
+  ctl().limbManagerSet_->setSensorMinContactPosition(min_pose_);
+  ctl().limbManagerSet_->setSensorMaxContactPosition(max_pose_);
+  ctl().limbManagerSet_->setSensorTouchDown(touchDown_);
 
   return false;
 }

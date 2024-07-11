@@ -1,5 +1,7 @@
 #pragma once
 
+#include <MultiContactController/LimbManager.h>
+#include <MultiContactController/MultiContactController.h>
 #include <MultiContactController/State.h>
 
 #include <ros/callback_queue.h>

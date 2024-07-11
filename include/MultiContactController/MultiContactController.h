@@ -2,6 +2,7 @@
 
 #include <mc_control/fsm/Controller.h>
 
+#include <MultiContactController/LimbManagerSet.h>
 #include <MultiContactController/LimbTypes.h>
 
 namespace mc_tasks
