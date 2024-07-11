@@ -54,13 +54,18 @@ states:
         Right:
           translation: [0, -0.105, 0] # [m]
 
+  MCC::Tactile_:
+    base: MCC::Tactile
+    configs:
+      tactileTopicName: /tactile_sensor_system_client/contact_area
+
   MCC::GuiStep_:
     base: MCC::GuiStep
     configs: {}
 
   MCC::Main_:
     base: Parallel
-    states: [MCC::GuiWalk_, MCC::GuiStep_]
+    states: [MCC::GuiWalk_, MCC::GuiStep_, MCC::Tactile_]
 
 # Transitions map
 transitions:
