@@ -167,7 +167,12 @@ void LimbManager::update()
             std::vector<Eigen::Vector3d> localVertices;
             ////////////////
             // \todo Set localVertices here. The following is example.
-            if(config_.enableSensorBasedContactArea)
+            // if(limb_.name == "LeftFoot")
+            // {
+            //   localVertices = {Eigen::Vector3d(-0.2, -0.069, 0.0), Eigen::Vector3d(0.2, -0.069, 0.0),
+            //                    Eigen::Vector3d(0.2, 0.069, 0.0), Eigen::Vector3d(-0.2, 0.069, 0.0)};
+            // }
+            if(config_.enableSensorBasedContactArea && ((limb_.name == "RightFoot") || (limb_.name == "LeftFoot")))
             {
               auto min_contact = getSensorMinContactPosition();
               auto max_contact = getSensorMaxContactPosition();
@@ -445,6 +450,24 @@ void LimbManager::addToLogger(mc_rtc::Logger & logger)
   MC_RTC_LOG_HELPER(name + "_phase", phase_);
   MC_RTC_LOG_HELPER(name + "_impGainType", impGainType_);
   logger.addLogEntry(name + "_contactWeight", this, [this]() { return getContactWeight(ctl().t()); });
+
+  for(const auto & foot : feet)
+  {
+    logger.addLogEntry(config_.name + "_sensor_contactMaxDist_" + foot, this,
+                       [this, foot]() -> const Eigen::Vector3d { return sensor_max_contact_position_.at(foot); });
+
+    logger.addLogEntry(config_.name + "_sensor_contactMinDist_" + foot, this,
+                       [this, foot]() -> const Eigen::Vector3d { return sensor_min_contact_position_.at(foot); });
+
+    logger.addLogEntry(config_.name + "_sensor_touchDown_" + foot, this,
+                       [this, foot]() -> bool { return sensor_touchDown_.at(foot); });
+
+    logger.addLogEntry(config_.name + "_sensor_defauldContactMaxDist_" + foot, this,
+                       [this, foot]() -> const Eigen::Vector3d { return default_max_contact_position_.at(foot); });
+
+    logger.addLogEntry(config_.name + "_sensor_defauldContactMinDist_" + foot, this,
+                       [this, foot]() -> const Eigen::Vector3d { return default_min_contact_position_.at(foot); });
+  }
 
   constexpr bool enableDebugLog = false;
   if(enableDebugLog)

@@ -334,5 +334,8 @@ protected:
   std::unordered_map<std::string, Eigen::Vector3d> sensor_min_contact_position_;
   std::unordered_map<std::string, Eigen::Vector3d> default_max_contact_position_;
   std::unordered_map<std::string, Eigen::Vector3d> default_min_contact_position_;
+
+  //! Tactile sensor name list
+  std::array<std::string, 2> feet = {"LeftFoot", "RightFoot"};
 };
 } // namespace MCC
