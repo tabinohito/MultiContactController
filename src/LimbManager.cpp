@@ -24,6 +24,7 @@ void LimbManager::Configuration::load(const mc_rtc::Configuration & mcRtcConfig)
   mcRtcConfig("keepPoseForTouchDownLimb", keepPoseForTouchDownLimb);
   mcRtcConfig("enableWrenchDistForTouchDownLimb", enableWrenchDistForTouchDownLimb);
   mcRtcConfig("weightTransitDuration", weightTransitDuration);
+  mcRtcConfig("enableSensorBasedContactArea", enableSensorBasedContactArea);
   mcRtcConfig("touchDownRemainingDuration", touchDownRemainingDuration);
   mcRtcConfig("touchDownPosError", touchDownPosError);
   mcRtcConfig("touchDownForceZ", touchDownForceZ);
@@ -160,19 +161,20 @@ void LimbManager::update()
         {
           if(auto surfaceContact = std::dynamic_pointer_cast<ForceColl::SurfaceContact>(contactCommand->constraint))
           {
-            mc_rtc::log::info("[LimbManager({})] Update local vertices of surface contact constraint.", std::to_string(limb_));
+            mc_rtc::log::info("[LimbManager({})] Update local vertices of surface contact constraint.",
+                              std::to_string(limb_));
             // The number of elements in localVertices must be the same as before the update.
             std::vector<Eigen::Vector3d> localVertices;
             ////////////////
             // \todo Set localVertices here. The following is example.
-            if(limb_.name == "LeftFoot")
+            if(config_.enableSensorBasedContactArea)
             {
+              auto min_contact = getSensorMinContactPosition();
+              auto max_contact = getSensorMaxContactPosition();
               localVertices = {
-                Eigen::Vector3d(-0.2, -0.069, 0.0),
-                Eigen::Vector3d(0.2, -0.069, 0.0),
-                Eigen::Vector3d(0.2, 0.069, 0.0),
-                Eigen::Vector3d(-0.2, 0.069, 0.0)
-              };
+                  min_contact[limb_.name], max_contact[limb_.name],
+                  Eigen::Vector3d(min_contact[limb_.name](0), max_contact[limb_.name](1), min_contact[limb_.name](2)),
+                  Eigen::Vector3d(max_contact[limb_.name](0), min_contact[limb_.name](1), min_contact[limb_.name](2))};
             }
             else
             {

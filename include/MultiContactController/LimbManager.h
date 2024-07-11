@@ -72,6 +72,8 @@ public:
     double touchDownForceZ = 50; // [N]
     //! @}
 
+    bool enableSensorBasedContactArea = false;
+
     //! Impedance gains for limb tasks
     std::unordered_map<std::string, mc_tasks::force::ImpedanceGains> impGains = {
         {"SingleContact", mc_tasks::force::ImpedanceGains::Default()},
@@ -183,6 +185,70 @@ public:
    */
   std::array<double, 2> getClosestContactTimes(double t) const;
 
+  /** \brief Set sensor based contact area.
+  \param sensor_contact_position sensor based contact position
+*/
+  void setSensordContactArea(std::unordered_map<std::string, std::vector<Eigen::Vector2d>> sensor_contact_position)
+  {
+    sensor_contact_position_ = sensor_contact_position;
+  }
+
+  /** \brief get sensor based contact area.
+    \param sensor_contact_position sensor based contact position
+  */
+  std::unordered_map<std::string, std::vector<Eigen::Vector2d>> getSensorContactArea()
+  {
+    return sensor_contact_position_;
+  }
+
+  /** \brief Set sensor touch down.
+      \param sensor_touch_down sensor touch down
+   */
+  void setSensorTouchDown(std::unordered_map<std::string, bool> sensor_touchDown)
+  {
+    sensor_touchDown_ = sensor_touchDown;
+  }
+
+  /** \brief get sensor touch down.
+    \param sensor_touch_down sensor touch down
+  */
+  std::unordered_map<std::string, bool> getSensorTouchDown()
+  {
+    return sensor_touchDown_;
+  }
+
+  /** \brief Set sensor max contact position.
+      \param sensor_max_contact_position sensor max contact position
+   */
+  void setSensorMaxContactPosition(std::unordered_map<std::string, Eigen::Vector3d> sensor_max_contact_position)
+  {
+    sensor_max_contact_position_ = sensor_max_contact_position;
+  }
+
+  /** \brief get sensor max contact position.
+    \param sensor_max_contact_position sensor max contact position
+  */
+  std::unordered_map<std::string, Eigen::Vector3d> getSensorMaxContactPosition()
+  {
+    return sensor_max_contact_position_;
+  }
+
+  /** \brief Set sensor min contact position.
+      \param sensor_min_contact_position sensor min contact position
+   */
+  void setSensorMinContactPosition(std::unordered_map<std::string, Eigen::Vector3d> sensor_min_contact_position)
+  {
+    sensor_min_contact_position_ = sensor_min_contact_position;
+  }
+
+  /** \brief get sensor min contact position.
+    \param sensor_min_contact_position sensor min contact position
+  */
+  std::unordered_map<std::string, Eigen::Vector3d> getSensorMinContactPosition()
+  {
+    return sensor_min_contact_position_;
+  }
+
 protected:
   /** \brief Const accessor to the controller. */
   inline const MultiContactController & ctl() const
@@ -261,5 +327,12 @@ protected:
 
   //! Whether to require updating target pose for contact constraint
   bool requireTouchDownPoseUpdate_ = false;
+
+  std::unordered_map<std::string, std::vector<Eigen::Vector2d>> sensor_contact_position_;
+  std::unordered_map<std::string, bool> sensor_touchDown_;
+  std::unordered_map<std::string, Eigen::Vector3d> sensor_max_contact_position_;
+  std::unordered_map<std::string, Eigen::Vector3d> sensor_min_contact_position_;
+  std::unordered_map<std::string, Eigen::Vector3d> default_max_contact_position_;
+  std::unordered_map<std::string, Eigen::Vector3d> default_min_contact_position_;
 };
 } // namespace MCC
