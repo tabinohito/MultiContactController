@@ -135,6 +135,7 @@ LimbManagerSet:
       keepPoseForTouchDownLimb: false
       enableWrenchDistForTouchDownLimb: true
       weightTransitDuration: 0.1 # [sec]
+      enableSensorBasedContactArea: false # tactile sensor
       touchDownRemainingDuration: 0.2 # [sec]
       touchDownPosError: 0.05 # [m]
       touchDownForceZ: 50 # [N]
