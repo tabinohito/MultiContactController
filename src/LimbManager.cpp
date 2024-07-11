@@ -101,6 +101,20 @@ void LimbManager::reset(const mc_rtc::Configuration & _constraintConfig)
         std::make_shared<ContactCommand>(ctl().t(), ContactConstraint::makeSharedFromConfig(constraintConfig));
   }
   contactCommandList_.emplace(ctl().t(), currentContactCommand_);
+
+  for(const auto & foot : feet)
+  {
+    sensor_max_contact_position_[foot].setZero();
+    sensor_min_contact_position_[foot].setZero();
+    sensor_touchDown_[foot] = false;
+
+    default_max_contact_position_[foot].x() = 0;
+    default_max_contact_position_[foot].y() = 0;
+    default_max_contact_position_[foot].z() = 0;
+    default_min_contact_position_[foot].x() = 0;
+    default_min_contact_position_[foot].y() = 0;
+    default_min_contact_position_[foot].z() = 0;
+  }
 }
 
 void LimbManager::update()
