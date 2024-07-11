@@ -18,4 +18,8 @@ add_fsm_state(GuiStepState GuiStepState.cpp)
 target_link_libraries(GuiStepState PUBLIC
   ${CONTROLLER_NAME})
 
+add_fsm_state(TactileState TactileState.cpp)
+target_link_libraries(TactileState PUBLIC
+  ${CONTROLLER_NAME})
+
 add_fsm_data_directory(data)
